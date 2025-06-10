@@ -1,1 +1,3 @@
-Testing
+- nvm use --lts
+- npm install
+- npm run dev
