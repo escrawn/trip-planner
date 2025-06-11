@@ -30,7 +30,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   const [directionsService, setDirectionsService] = useState<any>(null);
   const [directionsRenderer, setDirectionsRenderer] = useState<any>(null);
 
-  const GOOGLE_MAPS_API_KEY = 'AIzaSyDfdgr2HjWPuj-j3ZwPNiKFsx75bSKV3mc';
+  const GOOGLE_MAPS_API_KEY = 'AIzaSyAeYDBR0Kwf14a-2DkucJc1I2lUffW5CKE';
 
   useEffect(() => {
     const loadGoogleMaps = () => {
@@ -189,16 +189,13 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         },
       });
 
-      // Only show recommended/selected hotels based on current route type
-      const recommendedHotels = stop.hotels.filter((hotel: any) => {
-        const isSelected = hotel.id === selectedHotels?.[stop.waypoint?.id];
-        const isRecommended = (routeType === 'fastest' && hotel.isFastest) || 
-                             (routeType === 'cheapest' && hotel.isCheapest);
-        return isSelected || isRecommended;
-      });
+      // Show selected hotel and up to 3 additional nearby hotels
+      const selectedHotel = stop.hotels.find((hotel: any) => hotel.id === selectedHotels?.[stop.waypoint?.id]);
+      const otherHotels = stop.hotels.filter((hotel: any) => hotel.id !== selectedHotels?.[stop.waypoint?.id]).slice(0, 3);
+      const displayedHotels = selectedHotel ? [selectedHotel, ...otherHotels] : stop.hotels.slice(0, 4);
 
       // Add hotel markers near the route
-      recommendedHotels.forEach((hotel: any, hotelIndex: number) => {
+      displayedHotels.forEach((hotel: any, hotelIndex: number) => {
         // Position hotels closer to the route (smaller radius)
         const angle = (hotelIndex * 90) - 45;
         const radius = 0.003; // Much smaller radius to keep hotels near route
